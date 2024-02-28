@@ -25,6 +25,7 @@ class PermissionAdminSeeder extends Seeder
     Permission::firstOrCreate(['name' => UserPermission::SUPER_ADMIN]);
     Permission::firstOrCreate(['name' => UserPermission::ADMIN]);
     Permission::firstOrCreate(['name' => UserPermission::STAFF]);
+    Permission::firstOrCreate(['name' => UserPermission::USER]);
 
     // Create a new user
     $saname = 'Super Admin';
@@ -36,6 +37,7 @@ class PermissionAdminSeeder extends Seeder
         'email' => $saemail,
         'password' => Hash::make($sapassword),
     ]);
+    
         
     $aname = 'Jerquin Bayudo';
     $aemail = 'admin@fligno.com';
@@ -46,15 +48,29 @@ class PermissionAdminSeeder extends Seeder
         'email' => $aemail,
         'password' => Hash::make($apassword),
     ]);
+    $bname = 'Jerquin Bayudo';
+    $bemail = 'user@fligno.com';
+    $bpassword = 'test123';
+
+    $user3 = User::create([
+        'name' => $bname,
+        'email' => $bemail,
+        'password' => Hash::make($bpassword),
+    ]);
 
     // Assign permissions to the user
     $user1->givePermissionTo([
         UserPermission::SUPER_ADMIN,
         UserPermission::ADMIN,
         UserPermission::STAFF,
+        UserPermission::USER,
     ]);
     $user2->givePermissionTo([
         UserPermission::ADMIN,
+        UserPermission::USER,
+    ]);
+    $user3->givePermissionTo([
+        UserPermission::USER,
     ]);
     }
 }

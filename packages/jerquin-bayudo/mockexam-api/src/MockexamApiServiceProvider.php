@@ -1,11 +1,11 @@
 <?php
 
-namespace Jerquin\ChatbotApi;
+namespace Jerquin\Mockexam;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\File;
 
-class ChatbotApiServiceProvider extends ServiceProvider
+class MockexamApiServiceProvider extends ServiceProvider
 {
     /**
      * Perform post-registration booting of services.
@@ -32,15 +32,15 @@ class ChatbotApiServiceProvider extends ServiceProvider
      */
     public function register(): void
     {      
-        $this->mergeConfigFrom(__DIR__.'/../config/chatbot-api.php', 'chatbot-api');
+        $this->mergeConfigFrom(__DIR__.'/../config/mockexam-api.php', 'mockexam-api');
         // Register the service the package provides.
             config([
             'auth' => File::getRequire(__DIR__ . '/../config/auth.php'),
             'cors' => File::getRequire(__DIR__ . '/../config/cors.php'),
             'permission' => File::getRequire(__DIR__ . '/../config/permission.php'),
         ]);
-        $this->app->singleton('chatbot-api', function ($app) {
-            return new ChatbotApi;
+        $this->app->singleton('mockexam-api', function ($app) {
+            return new MockexamApi;
         });
     }
 
@@ -51,7 +51,7 @@ class ChatbotApiServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['chatbot-api'];
+        return ['mockexam-api'];
     }
 
     /**
@@ -63,8 +63,8 @@ class ChatbotApiServiceProvider extends ServiceProvider
     {
         // Publishing the configuration file.
         $this->publishes([
-            __DIR__.'/../config/chatbot-api.php' => config_path('chatbot-api.php'),
-        ], 'chatbot-api.config');
+            __DIR__.'/../config/mockexam-api.php' => config_path('mockexam-api.php'),
+        ], 'mockexam-api.config');
 
         // Publishing the views.
         /*$this->publishes([

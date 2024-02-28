@@ -7,7 +7,7 @@
     "require": {
         "php": "^8.0",
         "doctrine/dbal": "^3.6",
-        "jerquin-bayudo/chatbot-api": "@dev",
+        "jerquin-bayudo/mockexam-api": "@dev",
         "fruitcake/laravel-cors": "^2.0.5",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.0",
@@ -28,7 +28,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Jerquin\\": "packages/jerquin-bayudo/chatbot-api/src"
+            "Jerquin\\": "packages/jerquin-bayudo/mockexam-api/src"
         }
     },
     "autoload-dev": {
@@ -65,9 +65,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "repositories": {
-        "jerquin-bayudo/chatbot-api": {
+        "jerquin-bayudo/mockexam-api": {
             "type": "path",
-            "url": "packages/jerquin-bayudo/chatbot-api"
+            "url": "packages/jerquin-bayudo/mockexam-api"
 
         }
     }

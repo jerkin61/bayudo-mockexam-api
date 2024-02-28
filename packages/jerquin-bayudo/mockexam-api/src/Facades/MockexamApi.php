@@ -1,10 +1,10 @@
 <?php
 
-namespace Jerquin\ChatbotApi\Facades;
+namespace Jerquin\Mockexam\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class ChatbotApi extends Facade
+class MockexamApi extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -13,6 +13,6 @@ class ChatbotApi extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return 'chatbot-api';
+        return 'mockexam-api';
     }
 }

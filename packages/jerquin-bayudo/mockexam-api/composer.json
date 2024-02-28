@@ -1,5 +1,5 @@
 {
-    "name": "jerquin-bayudo/chatbot-api",
+    "name": "jerquin-bayudo/mockexam-api",
     "description": ":package_description",
     "license": "MIT",
     "authors": [
@@ -9,8 +9,8 @@
             "homepage": "http://author.com"
         }
     ],
-    "homepage": "https://github.com/jerquin-bayudo/chatbot-api",
-    "keywords": ["Laravel", "ChatbotApi"],
+    "homepage": "https://github.com/jerquin-bayudo/mockexam-api",
+    "keywords": ["Laravel", "Mockexam"],
     "require": {
         "illuminate/support": "~9",
         "prettus/l5-repository": "^2.9",
@@ -27,21 +27,21 @@
     },
     "autoload": {
         "psr-4": {
-            "Jerquin\\ChatbotApi\\": "src/"
+            "Jerquin\\Mockexam\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Jerquin\\ChatbotApi\\Tests\\": "tests"
+            "Jerquin\\Mockexam\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Jerquin\\ChatbotApi\\ChatbotApiServiceProvider"
+                "Jerquin\\Mockexam\\MockexamApiServiceProvider"
             ],
             "aliases": {
-                "ChatbotApi": "Jerquin\\ChatbotApi\\Facades\\ChatbotApi"
+                "Mockexam": "Jerquin\\Mockexam\\Facades\\MockexamtApi"
             }
         }
     }
