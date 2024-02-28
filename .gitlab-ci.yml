@@ -1,0 +1,6 @@
+# nxc-pipeline :  chatbot
+
+include:
+  - project: 'site-reliability/delivery-sre/pylon'
+    ref: main
+    file: '/.gitlab-ci/templates/nxc-pipeline.yml'
