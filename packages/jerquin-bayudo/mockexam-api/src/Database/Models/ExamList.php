@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Jerquin\Database\Models\ExamCategory;
 
 class ExamList extends Model
 {
@@ -29,6 +30,9 @@ class ExamList extends Model
         ];
     }
 
- 
+     public function examCategory()
+    {
+        return $this->hasMany(ExamCategory::class, 'exam_id', 'id');
+    }
 
 }

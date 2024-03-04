@@ -35,7 +35,7 @@ class ExamListController extends CoreController
     $limit = $request->limit ? $request->limit : 100000;
     $columnsToSelect = ['name', 'sale_price', 'id', 'sku', 'wholesale_price', 'unit', 'quantity', 'tax', 'status'];
 
-    $query = $this->repository->select('*');
+    $query = $this->repository->with('examCategory')->select('*');
     $results = $query->paginate($limit)->withQueryString()->toArray();
     return $results;
 }
