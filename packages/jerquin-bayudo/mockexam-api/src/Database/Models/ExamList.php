@@ -12,7 +12,6 @@ use Jerquin\Database\Models\ExamCategory;
 
 class ExamList extends Model
 {
-    use Sluggable;
 
     protected $table = 'examlist';
 
@@ -21,14 +20,7 @@ class ExamList extends Model
     protected $casts = [
  
     ];
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => 'name'
-            ]
-        ];
-    }
+
 
      public function examCategory()
     {

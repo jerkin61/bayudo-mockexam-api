@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use Jerquin\Database\Models\Profile;
 use Jerquin\Database\Models\ExamList;
 use Jerquin\Database\Repositories\ExamListRepository;
-use Jerquin\Http\Requests\InvoiceCreateRequest;
-use Jerquin\Http\Requests\InvoiceUpdateRequest;
+use Jerquin\Http\Requests\ExamListCreateRequest;
+use Jerquin\Http\Requests\ExamListUpdateRequest;
 use Jerquin\Http\Requests\ProductUpdateRequest;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
@@ -40,7 +40,7 @@ class ExamListController extends CoreController
     return $results;
 }
 
-    public function update(InvoiceUpdateRequest $request, $id)
+    public function update(ExamListUpdateRequest $request, $id)
     {
         try {
             $validatedData = $request->validated();  
@@ -65,25 +65,20 @@ class ExamListController extends CoreController
             // throw new ChatbotException('ERROR.NOT_FOUND');
         }
     }
-//     public function store(InvoiceCreateRequest $request)
-//     {
+    public function store(ExamListCreateRequest $request)
+    {
       
-//         $validatedData = $request->validated();  
-//         $existingProduct = Invoice::where('invoice_number', $validatedData['invoice_number'])->first();
-
-//         if ($existingProduct) {
-//             return response()->json(['error' => 'SKU already exists'], 422);
-//         }
-//         return $this->repository->create($validatedData);
-//     }
-//     public function destroy($id)
-//     {
-//         try {
-//             return $this->repository->findOrFail($id)->delete();
-//         } catch (\Exception $e) {
-//             throw new JerquinException('ERROR.NOT_FOUND');
-//         }
-//     }  
+        $validatedData = $request->validated();  
+        return $this->repository->create($validatedData);
+    }
+    public function destroy($id)
+    {
+        try {
+            return $this->repository->findOrFail($id)->delete();
+        } catch (\Exception $e) {
+            throw new JerquinException('ERROR.NOT_FOUND');
+        }
+    }  
 
 //         private function arrayToCsv(array $data): string
 //     {
