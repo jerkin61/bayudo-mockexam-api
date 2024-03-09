@@ -70,14 +70,14 @@ class ExamCategoryController extends CoreController
         $validatedData = $request->validated();  
         return $this->repository->create($validatedData);
     }
-//     public function destroy($id)
-//     {
-//         try {
-//             return $this->repository->findOrFail($id)->delete();
-//         } catch (\Exception $e) {
-//             throw new JerquinException('ERROR.NOT_FOUND');
-//         }
-//     }  
+    public function destroy($id)
+    {
+        try {
+            return $this->repository->findOrFail($id)->delete();
+        } catch (\Exception $e) {
+            throw new JerquinException('ERROR.NOT_FOUND');
+        }
+    }  
 
 //         private function arrayToCsv(array $data): string
 //     {
