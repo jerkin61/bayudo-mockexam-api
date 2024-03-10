@@ -124,7 +124,7 @@ class UserController extends CoreController
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->where('is_active', true)->first();
+        $user = User::where('email', $request->email)->where('is_active', true)->first(); 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return ["token" => null, "permissions" => []];
         }
