@@ -142,7 +142,7 @@ class UserController extends CoreController
 
     public function register(UserCreateRequest $request)
     {
-        $permissions = [Permission::STAFF];
+        $permissions = [Permission::USER];
         if (isset($request->permission)) {
             $permissions[] = isset($request->permission->value) ? $request->permission->value : $request->permission;
         }
