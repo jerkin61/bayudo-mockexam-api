@@ -33,7 +33,7 @@ class QuestionController extends CoreController
     public function index(Request $request)
   {
     $limit = $request->limit ? $request->limit : 100000;
-    $query = $this->repository->select('*');  
+    $query = $this->repository->with('examCategory')->select('*');  
     if ($request->has('question_id')) {
         $query->where('exam_category_id', $request->question_id);
     }
@@ -61,7 +61,7 @@ class QuestionController extends CoreController
     public function show($id)
     {
         try {
-            return $this->repository->findOrFail($id);
+            return $this->repository->with('examCategory')->findOrFail($id);
         } catch (\Exception $e) {
             // throw new ChatbotException('ERROR.NOT_FOUND');
         }

@@ -28,7 +28,10 @@ class Question extends Model
             ]
         ];
     }
-
+    public function examCategory(): BelongsTo
+    {
+        return $this->belongsTo(ExamCategory::class, 'exam_category_id');
+    }
  
 
 }
