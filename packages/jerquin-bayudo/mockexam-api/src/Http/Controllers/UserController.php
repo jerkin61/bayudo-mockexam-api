@@ -40,7 +40,7 @@ class UserController extends CoreController
     public function index(Request $request)
     {
         $limit = $request->limit ?   $request->limit : 15;
-        return $this->repository->with(['profile', 'company'])->paginate($limit);
+        return $this->repository->with(['profile', 'examTaken'])->paginate($limit);
     }
 
     /**

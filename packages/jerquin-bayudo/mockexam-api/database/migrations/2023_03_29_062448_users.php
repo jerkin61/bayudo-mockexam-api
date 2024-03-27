@@ -44,25 +44,7 @@ public function up()
     });
 
 
-
-
-    // Schema::create('invoices', function (Blueprint $table) {
-    //         $table->id();
-    //         $table->unsignedInteger('invoice_number')->unique();
-    //         $table->json('product_list')->nullable();
-    //         $table->decimal('total', 10, 2)->default(0);
-    //         $table->json('discount_list')->nullable();
-    //         $table->enum('status', ['existing', 'cancelled', 'completed', 'hold'])->default('existing');
-    //         $table->date('date_of_invoice');
-    //         $table->string('name_of_cashier')->nullable();
-    //         $table->time('transaction_duration')->nullable();
-    //         $table->decimal('payment_received', 10, 2)->nullable();
-    //         $table->decimal('change_tendered', 10, 2)->nullable();
-    //          $table->text('notes')->nullable();
-    //         $table->timestamps();
-          
-    //     });
-      
+     
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->json('options');

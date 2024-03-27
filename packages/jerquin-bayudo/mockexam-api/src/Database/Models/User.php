@@ -69,9 +69,13 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class, 'user_id');
     }
 
-     public function company(): HasOne
+ 
+    /**
+     * @return HasOne
+     */
+    public function examTaken(): HasMany
     {
-        return $this->hasOne(Company::class, 'owner_id');
+        return $this->hasMany(ExamTaken::class, 'user_id');
     }
 
 

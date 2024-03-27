@@ -11,6 +11,9 @@ use Jerquin\Http\Controllers\SettingsController;
 use Jerquin\Http\Controllers\ExamListController;
 use Jerquin\Http\Controllers\ExamCategoryController;
 use Jerquin\Http\Controllers\QuestionController;
+use Jerquin\Http\Controllers\ExamTakenController;
+use Jerquin\Http\Controllers\ExamCategoryTakenController;
+use Jerquin\Http\Controllers\AnswerExamsController;
 use Jerquin\Enums\Permission;
 
 
@@ -37,8 +40,8 @@ Route::apiResource('user', UserController::class, [
 Route::apiResource('categories', CategoryController::class, [
     'only' => ['index', 'show']
 ]);
-    Route::get('/me', 'Jerquin\Http\Controllers\UserController@me');
-    Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
+   
+  
 
 // Route::group(
 //     ['middleware' => [ 'auth:sanctum', 'permission:' . Permission::STAFF . '|' . Permission::ADMIN]],
@@ -47,36 +50,51 @@ Route::apiResource('categories', CategoryController::class, [
 //     Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
     
 // });
-
+Route::apiResource('settings', SettingsController::class, [
+    'only' => ['index']
+]);
+Route::apiResource('examcategory', ExamCategoryController::class, [
+    'only' => ['index', 'show']
+]);
+Route::apiResource('examlist', ExamListController::class, [
+    'only' => ['index', 'show']
+]);
 Route::group(
-    ['middleware' => [ 'auth:sanctum', 'permission:' . Permission::SUPER_ADMIN . '|' . Permission::ADMIN]],
+    ['middleware' => [ 'auth:sanctum']],
      function () {
+        Route::get('/me', 'Jerquin\Http\Controllers\UserController@me');
+        Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
+        Route::apiResource('categories', CategoryController::class, [
+            'only' => ['store', 'update', 'destroy']
+        ]);
 
+        Route::apiResource('examlist', ExamListController::class, [
+            'only' => [ 'update','store', 'destroy']
+        ]);
+        Route::apiResource('question', QuestionController::class, [
+            'only' => ['index', 'show', 'update','store', 'destroy']
+        ]);
+        Route::apiResource('examcategory', ExamCategoryController::class, [
+            'only' => [ 'update','store', 'destroy']
+        ]);
+        Route::apiResource('examtaken', ExamTakenController::class, [
+            'only' => ['index', 'show', 'update','store', 'destroy']
+        ]);
+        Route::apiResource('answerexams', AnswerExamsController::class, [
+            'only' => ['index', 'show', 'update','store', 'destroy']
+        ]);
+        Route::apiResource('examcategorytaken', ExamCategoryTakenController::class, [
+            'only' => ['index', 'show', 'update','store', 'destroy']
+        ]);
+        Route::apiResource('settings', SettingsController::class, [
+            'only' => ['store']
+        ]);
+        Route::apiResource('attachment', AttachmentController::class, [
+            'only' => ['index', 'show', 'update','store', 'destroy']
+        ]);
     
 });
 
 
 
-    Route::apiResource('categories', CategoryController::class, [
-        'only' => ['store', 'update', 'destroy']
-    ]);
-
-
-    Route::apiResource('invoice', InvoiceController::class, [
-        'only' => ['index', 'show', 'update','store', 'destroy']
-    ]);
-    Route::apiResource('examlist', ExamListController::class, [
-        'only' => ['index', 'show', 'update','store', 'destroy']
-    ]);
-    Route::apiResource('question', QuestionController::class, [
-        'only' => ['index', 'show', 'update','store', 'destroy']
-    ]);
-    Route::apiResource('examcategory', ExamCategoryController::class, [
-        'only' => ['index', 'show', 'update','store', 'destroy']
-    ]);
-    Route::apiResource('settings', SettingsController::class, [
-        'only' => ['index', 'show', 'update','store', 'destroy']
-    ]);
-    Route::apiResource('attachment', AttachmentController::class, [
-        'only' => ['index', 'show', 'update','store', 'destroy']
-    ]);
+   
