@@ -92,6 +92,8 @@ Route::group(
         Route::apiResource('attachment', AttachmentController::class, [
             'only' => ['index', 'show', 'update','store', 'destroy']
         ]);
+        Route::post('export-questions', 'Jerquin\Http\Controllers\QuestionController@exportQuestions');
+        Route::post('import-questions', 'Jerquin\Http\Controllers\QuestionController@importQuestions');
     
 });
 
