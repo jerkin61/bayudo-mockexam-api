@@ -26,7 +26,7 @@ return new class extends Migration
             $table->float('exam_percentage', 5, 2)->nullable(); // Exam percentage with 2 decimal places
 
             $table->timestamps();
-
+            $table->boolean('completed')->default(false);
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('exam_id')->references('id')->on('examlist')->onDelete('cascade');

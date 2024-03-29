@@ -83,6 +83,7 @@ Route::group(
         Route::apiResource('answerexams', AnswerExamsController::class, [
             'only' => ['index', 'show', 'update','store', 'destroy']
         ]);
+
         Route::apiResource('examcategorytaken', ExamCategoryTakenController::class, [
             'only' => ['index', 'show', 'update','store', 'destroy']
         ]);
@@ -94,7 +95,7 @@ Route::group(
         ]);
         Route::post('export-questions', 'Jerquin\Http\Controllers\QuestionController@exportQuestions');
         Route::post('import-questions', 'Jerquin\Http\Controllers\QuestionController@importQuestions');
-    
+        Route::get('answerexams/{questionNo}/{examCategoryTaken}', [AnswerExamsController::class, 'showRelatedQuestion']);
 });
 
 

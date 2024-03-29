@@ -42,18 +42,18 @@ class ExamCategoryTakenController extends CoreController
     public function update(ExamCategoryTakenUpdateRequest $request, $id)
     {
         try {
+           $questionCount = Question::where('exam_category_id', $id)->count();
            $answerExams = AnswerExams::where('exam_taken_category_id', $id)->get();
             $correctCount = $answerExams->filter(function ($answerExam) {
                 return $answerExam->correct === 1;
             })->count();
 
-            $totalCount = $answerExams->count();
-            $examPercentage = ($totalCount > 0) ? ($correctCount / $totalCount) * 100 : 0; // Multiply by 100 to get percentage
+            $examPercentage = ($questionCount > 0) ? ($correctCount / $questionCount) * 100 : 0; // Multiply by 100 to get percentage
 
             $validatedData = $request->validated();
             $validatedData['exam_result'] = $correctCount;
             $validatedData['exam_percentage'] = $examPercentage;
-            $validatedData['number_of_items'] = $totalCount;
+            $validatedData['number_of_items'] = $questionCount;
 
             $repository = $this->repository->findOrFail($id);
             // return $correctCount;

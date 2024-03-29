@@ -97,7 +97,7 @@ class QuestionController extends CoreController
 	  public function exportQuestions(Request $request){
         try {
 			
-            $data = Question::select('question_no', 'question', 'answer', 'choices', 'exam_category_id', 'time_left', 'time', 'answered','right_ans')->get();
+            $data = Question::select('question_no', 'question', 'answer', 'choices', 'exam_category_id', 'time_left', 'time', 'answered','right_ans','explanation')->get();
             $transformedData = $data->map(function ($item) {
         // Decode the JSON in the 'choices' column
             $choices = json_decode($item->choices, true);
@@ -116,19 +116,6 @@ class QuestionController extends CoreController
             // Convert the transformed data back to an array for CSV export
             $csvData = $transformedData->toArray();
                     $fileName = 'exported_questions.csv';
-            $csv = $this->arrayToCsv($csvData);
-            return Response::make($csv, 200);
-        } catch (\Throwable $th) {
-		return response()->json(['error' => $th->getMessage()], 500);
-        }
-    }
-
-	  public function exportProducts(Request $request){
-        try {
-			
-            $data = Product::select('name', 'sale_price', 'id', 'sku', 'wholesale_price', 'unit', 'quantity', 'tax')->get();
-            $csvData = $data->toArray();
-            $fileName = 'exported_products.csv';
             $csv = $this->arrayToCsv($csvData);
             return Response::make($csv, 200);
         } catch (\Throwable $th) {
@@ -157,9 +144,9 @@ if (empty($csvData)) {
 }
 
 $headers = array_shift($csvData); // Extract headers
-
+// return $headers;
 try { 
-    DB::beginTransaction();
+    \DB::beginTransaction();
 
     foreach ($csvData as $row) {  
         if (count($row) == count($headers)) { // Ensure row data matches header count
@@ -177,16 +164,16 @@ try {
                 }
             }
             $data['choices'] = json_encode($choices); // Add the choices back as a JSON string
-
+            unset($data['time']);
             // Remove unwanted fields if they exist
             unset($data['id'], $data['created_at'], $data['deleted_at']);
-
+       
             // Insert the data into the database
             Question::create($data);
         }
     }
 
-    DB::commit();
+    \DB::commit();
     return response()->json(['success' => 'Data imported successfully']);
         } catch  (\Exception $e) {
             \DB::rollback();

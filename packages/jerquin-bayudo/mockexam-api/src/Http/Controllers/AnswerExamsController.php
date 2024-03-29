@@ -58,10 +58,10 @@ class AnswerExamsController extends CoreController
      * @param $id
      * @return JsonResponse
      */
-    public function show($questionNo)
+    public function showRelatedQuestion($questionNo, $examCategoryTaken)
     {
         try {
-          return $this->repository->where('question_no', $questionNo)->firstOrFail();
+          return $this->repository->where('question_no', $questionNo)->where('exam_taken_category_id', $examCategoryTaken)->firstOrFail();
         } catch (\Exception $e) {
             // throw new ChatbotException('ERROR.NOT_FOUND');
         }

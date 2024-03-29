@@ -30,7 +30,14 @@ public function rules()
         'exam_taken_category_id' => 'required|exists:exam_category_taken,id',
             'time_done' => 'nullable',
             'time_started' => 'nullable',
-            'question_no' => 'required|integer|min:1|unique:answer_exams',
+            'question_no' => [
+                'required',
+                'integer',
+                'min:1',
+                Rule::unique('answer_exams')->where(function ($query) {
+                    return $query->where('exam_taken_category_id', $this->input('exam_taken_category_id'));
+                }),
+            ],
             'answered_id' => 'required|exists:questions,id',
             'user_answer' => 'required|string|max:1',
             'right_answer' => 'required|string|max:1',

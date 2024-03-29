@@ -52,6 +52,7 @@ return new class extends Migration
             $table->float('time')->nullable(); // Changed to float
             $table->boolean('answered')->default(false); // Changed to bool
             $table->string('right_ans')->nullable(); // Changed to string
+            $table->text('explanation');
             $table->timestamps();
         });
     }
