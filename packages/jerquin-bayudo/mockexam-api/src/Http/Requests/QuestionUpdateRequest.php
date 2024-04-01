@@ -35,6 +35,7 @@ public function rules()
     return [
         'question_no' => 'sometimes|required|integer',
         'question' => 'sometimes|required|string',
+        'explanation' => 'sometimes|required|string',
         'answer' => 'sometimes|nullable|string',
         'choices' => 'sometimes|required|string', // Validate that 'choices' is a string
         'exam_category_id' => 'sometimes|required|integer',

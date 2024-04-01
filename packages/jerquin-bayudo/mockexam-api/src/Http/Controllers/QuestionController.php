@@ -147,31 +147,36 @@ $headers = array_shift($csvData); // Extract headers
 // return $headers;
 try { 
     \DB::beginTransaction();
+foreach ($csvData as $row) {  
+    if (count($row) == count($headers)) { // Ensure row data matches header count
+        $data = array_combine($headers, $row);
 
-    foreach ($csvData as $row) {  
-        if (count($row) == count($headers)) { // Ensure row data matches header count
-            $data = array_combine($headers, $row);
-
-            // Process choice keys and convert them into a JSON string
-            $choices = [];
-            foreach (['a', 'b', 'c', 'd'] as $choiceKey) {
-                if (isset($data[$choiceKey])) {
-                    $choices[] = [
-                        'key' => $choiceKey,
-                        'value' => $data[$choiceKey]
-                    ];
-                    unset($data[$choiceKey]); // Remove the individual choice from data
-                }
+        // Process choice keys and convert them into a JSON string
+        $choices = [];
+        foreach (range('a', 'j') as $choiceKey) { // Extend choices up to 'j'
+            if (isset($data[$choiceKey]) && $data[$choiceKey] !== '') { // Check if value is not empty
+                $choices[] = [
+                    'key' => $choiceKey,
+                    'value' => $data[$choiceKey]
+                ];
+                unset($data[$choiceKey]); // Remove the individual choice from data
             }
-            $data['choices'] = json_encode($choices); // Add the choices back as a JSON string
-            unset($data['time']);
-            // Remove unwanted fields if they exist
-            unset($data['id'], $data['created_at'], $data['deleted_at']);
-       
-            // Insert the data into the database
-            Question::create($data);
         }
+        if (!empty($choices)) { // Check if any choices were added
+            $data['choices'] = json_encode($choices); // Add the choices back as a JSON string
+            unset($data['a'], $data['b'], $data['c'], $data['d'], $data['e'], $data['f'], $data['g'], $data['h'], $data['i'], $data['j']); // Remove individual choice keys from data
+        } else {
+            unset($data['a'], $data['b'], $data['c'], $data['d'], $data['e'], $data['f'], $data['g'], $data['h'], $data['i'], $data['j']); // Remove all choice keys from data if none were added
+        }
+
+        unset($data['time']);
+        // Remove unwanted fields if they exist
+        unset($data['id'], $data['created_at'], $data['deleted_at']);
+   
+        // Insert the data into the database
+        Question::create($data);
     }
+}
 
     \DB::commit();
     return response()->json(['success' => 'Data imported successfully']);

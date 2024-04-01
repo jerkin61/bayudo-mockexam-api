@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Jerquin\Database\Models\Profile;
 use Jerquin\Database\Models\ExamCategoryTaken;
 use Jerquin\Database\Models\AnswerExams;
+use Jerquin\Database\Models\Question;
 use Jerquin\Database\Repositories\ExamCategoryTakenRepository;
 use Jerquin\Http\Requests\ExamCategoryTakenUpdateRequest;
 use Jerquin\Http\Requests\ExamCategoryTakenCreateRequest;
@@ -42,7 +43,8 @@ class ExamCategoryTakenController extends CoreController
     public function update(ExamCategoryTakenUpdateRequest $request, $id)
     {
         try {
-           $questionCount = Question::where('exam_category_id', $id)->count();
+            $categorytoFind = ExamCategoryTaken::find($id)->exam_category_id;
+           $questionCount = Question::where('exam_category_id', $categorytoFind)->count();
            $answerExams = AnswerExams::where('exam_taken_category_id', $id)->get();
             $correctCount = $answerExams->filter(function ($answerExam) {
                 return $answerExam->correct === 1;
