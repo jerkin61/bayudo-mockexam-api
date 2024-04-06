@@ -51,7 +51,7 @@ class ExamCategoryTakenController extends CoreController
             })->count();
 
             $examPercentage = ($questionCount > 0) ? ($correctCount / $questionCount) * 100 : 0; // Multiply by 100 to get percentage
-
+         
             $validatedData = $request->validated();
             $validatedData['exam_result'] = $correctCount;
             $validatedData['exam_percentage'] = $examPercentage;

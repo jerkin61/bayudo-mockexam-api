@@ -49,6 +49,7 @@ class ExamTakenUpdateRequest extends FormRequest
             'pass' => 'sometimes|nullable|boolean',
             'exam_result' => 'sometimes|nullable|integer|min:0',
             'exam_percentage' => 'sometimes|nullable|numeric|min:0|max:1',
+ 
         ];
     }
 
