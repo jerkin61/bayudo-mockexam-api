@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class AnswerExamsCreateRequest extends FormRequest
+class QuestionFeedbackCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,6 +19,8 @@ class AnswerExamsCreateRequest extends FormRequest
     {
         return true;
     }
+
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -27,21 +29,15 @@ class AnswerExamsCreateRequest extends FormRequest
 public function rules()
 {
     return [
-        'exam_taken_category_id' => 'required|exists:exam_category_taken,id',
-            'time_done' => 'nullable',
-            'time_started' => 'nullable',
-            'question_no' => [
-                'required',
-                'integer',
-                'min:1',
-                Rule::unique('questions')->where(function ($query) {
-                    return $query->where('exam_category_id', $this->input('exam_category_id'));
-                }),
-            ],
-            'answered_id' => 'required|exists:questions,id',
-            'user_answer' => 'required|string|max:1',
-            'right_answer' => 'required|string|max:1',
-            'correct' => 'required|boolean',
+        'submitted_id' => 'required|integer',
+        'question_id' => 'required|integer',
+        'suggested_question' => 'required|string',
+        'suggested_answer' => 'nullable|string',
+        'user_feedback' => 'nullable|string',
+        'suggested_explanation' => 'nullable|string',
+        'suggested_choices' => 'required|string', // Validate that 'choices' is a string
+        'question_id' => 'required|integer',
+        'suggested_right_ans' => 'required|string',
     ];
 }
 
@@ -53,11 +49,11 @@ public function rules()
     public function messages()
     {
         return [
-            'question_no.required' => 'Question number is required',
-            'question_no.integer' => 'Question number must be an integer',
-            'question_no.unique' => 'Question exists',
-            'question.required' => 'Question field is required',
-            'question.string' => 'Question must be a string',
+            'question_no.required' => 'QuestionFeedback number is required',
+            'question_no.integer' => 'QuestionFeedback number must be an integer',
+            'question_no.unique' => 'A question with the same question number already exists',
+            'question.required' => 'QuestionFeedback field is required',
+            'question.string' => 'QuestionFeedback must be a string',
             'name.required'         => 'Name field is required',
             'name.string'           => 'Name is not a valid string',
             'name.max:255'          => 'Name can not be more than 255 character',

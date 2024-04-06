@@ -14,6 +14,7 @@ use Jerquin\Http\Controllers\QuestionController;
 use Jerquin\Http\Controllers\ExamTakenController;
 use Jerquin\Http\Controllers\ExamCategoryTakenController;
 use Jerquin\Http\Controllers\AnswerExamsController;
+use Jerquin\Http\Controllers\QuestionFeedbackController;
 use Jerquin\Enums\Permission;
 
 
@@ -59,6 +60,11 @@ Route::apiResource('examcategory', ExamCategoryController::class, [
 Route::apiResource('examlist', ExamListController::class, [
     'only' => ['index', 'show']
 ]);
+Route::apiResource('question-feedback', QuestionFeedbackController::class, [
+  'only' => ['index', 'show', 'update','store', 'destroy']
+]);
+Route::get('question-feedback-id/{questionId}', [QuestionFeedbackController::class, 'showPerQuestionFeedback']);
+
 Route::group(
     ['middleware' => [ 'auth:sanctum']],
      function () {

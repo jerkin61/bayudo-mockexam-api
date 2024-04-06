@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Question extends Model
+class QuestionFeedback extends Model
 {
     use Sluggable;
 
-    protected $table = 'questions';
+    protected $table = 'question_feedback';
 
     public $guarded = [];
 
@@ -28,13 +28,10 @@ class Question extends Model
             ]
         ];
     }
-    public function examCategory(): BelongsTo
+    public function question()
     {
-        return $this->belongsTo(ExamCategory::class, 'exam_category_id');
+        return $this->belongsTo('App\Models\Question');
     }
-    public function feedbacks()
-    {
-        return $this->hasMany('App\Models\QuestionFeedback');
-    }
+ 
 
 }

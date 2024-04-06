@@ -97,7 +97,12 @@ class QuestionController extends CoreController
 	  public function exportQuestions(Request $request){
         try {
 			
-            $data = Question::select('question_no', 'question', 'answer', 'choices', 'exam_category_id', 'time_left', 'time', 'answered','right_ans','explanation')->get();
+        $query = Question::select('question_no', 'question', 'answer', 'choices', 'exam_category_id', 'time_left', 'time', 'answered','right_ans','explanation');
+        if ($request->has('id')) {
+            $query = $query->where('exam_category_id', $request->id);
+        }
+
+        $data = $query->get();
             $transformedData = $data->map(function ($item) {
         // Decode the JSON in the 'choices' column
             $choices = json_decode($item->choices, true);
@@ -137,22 +142,22 @@ class QuestionController extends CoreController
 
         $fileData = $request->file; 
 // $csvContent = file_get_contents($fileData->getRealPath());
-$csvData = array_map('str_getcsv', explode("\n", urldecode($fileData)));
+        $csvData = array_map('str_getcsv', explode("\n", urldecode($fileData)));
 
-if (empty($csvData)) {
-    return response()->json(['errors' => ['CSV data is empty']], 422);
-}
+        if (empty($csvData)) {
+            return response()->json(['errors' => ['CSV data is empty']], 422);
+        }
 
-$headers = array_shift($csvData); // Extract headers
-// return $headers;
-try { 
-    \DB::beginTransaction();
-foreach ($csvData as $row) {  
-    if (count($row) == count($headers)) { // Ensure row data matches header count
-        $data = array_combine($headers, $row);
+        $headers = array_shift($csvData); // Extract headers
+        // return $headers;
+        try { 
+            \DB::beginTransaction();
+        foreach ($csvData as $row) {  
+            if (count($row) == count($headers)) { // Ensure row data matches header count
+                $data = array_combine($headers, $row);
 
-        // Process choice keys and convert them into a JSON string
-        $choices = [];
+                // Process choice keys and convert them into a JSON string
+                $choices = [];
         foreach (range('a', 'j') as $choiceKey) { // Extend choices up to 'j'
             if (isset($data[$choiceKey]) && $data[$choiceKey] !== '') { // Check if value is not empty
                 $choices[] = [

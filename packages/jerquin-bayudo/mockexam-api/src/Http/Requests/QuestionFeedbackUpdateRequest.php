@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class AnswerExamsCreateRequest extends FormRequest
+class QuestionFeedbackUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,6 +19,12 @@ class AnswerExamsCreateRequest extends FormRequest
     {
         return true;
     }
+    //   name: values.name,
+    //   number_of_items: values.number_of_items,
+    //   instruction: values.instruction,
+    //   description: values.description,
+    //   passing_rate: values.passing_rate,
+    //   total_time_limit_hours: values.total_time_limit_hours,
     /**
      * Get the validation rules that apply to the request.
      *
@@ -27,24 +33,16 @@ class AnswerExamsCreateRequest extends FormRequest
 public function rules()
 {
     return [
-        'exam_taken_category_id' => 'required|exists:exam_category_taken,id',
-            'time_done' => 'nullable',
-            'time_started' => 'nullable',
-            'question_no' => [
-                'required',
-                'integer',
-                'min:1',
-                Rule::unique('questions')->where(function ($query) {
-                    return $query->where('exam_category_id', $this->input('exam_category_id'));
-                }),
-            ],
-            'answered_id' => 'required|exists:questions,id',
-            'user_answer' => 'required|string|max:1',
-            'right_answer' => 'required|string|max:1',
-            'correct' => 'required|boolean',
+        'submitted_id' => 'required|integer',
+        'suggested_question' => 'sometimes|string',
+        'suggested_answer' => 'sometimes|nullable|string',
+        'user_feedback' => 'sometimes|nullable|string',
+        'suggested_explanation' => 'sometimes|nullable|string',
+        'suggested_choices' => 'sometimes|string', // Validate that 'choices' is a string
+        'question_id' => 'sometimes|integer',
+        'suggested_right_ans' => 'sometimes|string',
     ];
 }
-
     /**
      * Get the error messages that apply to the request parameters.
      *
@@ -53,11 +51,6 @@ public function rules()
     public function messages()
     {
         return [
-            'question_no.required' => 'Question number is required',
-            'question_no.integer' => 'Question number must be an integer',
-            'question_no.unique' => 'Question exists',
-            'question.required' => 'Question field is required',
-            'question.string' => 'Question must be a string',
             'name.required'         => 'Name field is required',
             'name.string'           => 'Name is not a valid string',
             'name.max:255'          => 'Name can not be more than 255 character',
