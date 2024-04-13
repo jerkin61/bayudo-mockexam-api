@@ -78,7 +78,7 @@ class ExamTakenController extends CoreController
         }
     }  
 
-//         private function arrayToCsv(array $data): string
+//         public function arrayToCsv(array $data): string
 //     {
 //         $output = fopen('php://temp', 'w');
 //         fputcsv($output, array_keys($data[0])); 

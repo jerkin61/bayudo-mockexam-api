@@ -83,7 +83,7 @@ class QuestionController extends CoreController
             throw new JerquinException('ERROR.NOT_FOUND');
         }
     }  
-        private function arrayToCsv(array $data): string
+        public function arrayToCsv(array $data): string
     {
         $output = fopen('php://temp', 'w');
         fputcsv($output, array_keys($data[0])); 

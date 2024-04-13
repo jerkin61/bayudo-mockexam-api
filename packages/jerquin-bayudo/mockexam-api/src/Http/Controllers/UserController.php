@@ -40,7 +40,8 @@ class UserController extends CoreController
     public function index(Request $request)
     {
         $limit = $request->limit ?   $request->limit : 15;
-        return $this->repository->with(['profile', 'examTaken'])->paginate($limit);
+        $users = $this->repository->with(['profile', 'examTaken'])->paginate($limit);
+        return $users;
     }
 
     /**
@@ -140,7 +141,24 @@ class UserController extends CoreController
         return $request->user()->currentAccessToken()->delete();
     }
 
-    public function register(UserCreateRequest $request)
+    public function registerStaff(UserCreateRequest $request)
+    {
+        $permissions = [Permission::STAFF];
+        if (isset($request->permission)) {
+            $permissions[] = isset($request->permission->value) ? $request->permission->value : $request->permission;
+        }
+        $user = $this->repository->create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        $user->givePermissionTo($permissions);
+
+        return ["token" => $user->createToken('auth_token')->plainTextToken, "permissions" => $user->getPermissionNames()];
+    }
+
+       public function register(UserCreateRequest $request)
     {
         $permissions = [Permission::USER];
         if (isset($request->permission)) {
@@ -157,7 +175,7 @@ class UserController extends CoreController
         return ["token" => $user->createToken('auth_token')->plainTextToken, "permissions" => $user->getPermissionNames()];
     }
 
-   
+
     public function forgetPassword(Request $request)
     {
         $user = $this->repository->findByField('email', $request->email);
@@ -321,6 +339,31 @@ class UserController extends CoreController
     public function socialLogin(Request $request)
     {
         return $this->socialLoginToken($request);
+    }
+
+    public function banUser(Request $request)
+    {
+        $user = $request->user();
+        if ($user && $user->hasPermissionTo(Permission::SUPER_ADMIN) && $user->id != $request->id) {
+            $banUser =  User::find($request->id);
+            $banUser->is_active = false;
+            $banUser->save();
+            return $banUser;
+        } else {
+            throw new PickbazarException('PICKBAZAR_ERROR.NOT_AUTHORIZED');
+        }
+    }
+    public function activeUser(Request $request)
+    {
+        $user = $request->user();
+        if ($user && $user->hasPermissionTo(Permission::SUPER_ADMIN) && $user->id != $request->id) {
+            $activeUser =  User::find($request->id);
+            $activeUser->is_active = true;
+            $activeUser->save();
+            return $activeUser;
+        } else {
+            throw new PickbazarException('PICKBAZAR_ERROR.NOT_AUTHORIZED');
+        }
     }
 
 

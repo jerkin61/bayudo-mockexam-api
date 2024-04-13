@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Jerquin\Database\Models\Profile;
+use Jerquin\Database\Models\Question;
 use Jerquin\Database\Models\QuestionFeedback;
 use Jerquin\Database\Repositories\QuestionFeedbackRepository;
 use Jerquin\Http\Requests\QuestionFeedbackUpdateRequest;
@@ -84,5 +85,29 @@ class QuestionFeedbackController extends CoreController
             throw new JerquinException('ERROR.NOT_FOUND');
         }
     }  
+
+    public function approveQuestionFeedback($id)
+{
+    try {
+        // Find the question feedback by its ID
+        $questionFeedback = QuestionFeedback::findOrFail($id);
+
+        // Retrieve the corresponding question
+        $question = Question::findOrFail($questionFeedback->question_id);
+
+        // Update the question fields with feedback data
+        $question->update([
+            'answer' => $questionFeedback->suggested_answer,
+            'question' => $questionFeedback->suggested_question,
+            'explanation' => $questionFeedback->suggested_explanation,
+            'choices' => $questionFeedback->suggested_choices,
+            'right_ans' => $questionFeedback->suggested_right_ans,
+        ]);
+
+        return $question;
+    } catch (\Exception $e) {
+        throw new JerquinException('ERROR.NOT_FOUND');
+    }
+}
 }
  
