@@ -102,6 +102,7 @@ class QuestionFeedbackController extends CoreController
             'explanation' => $questionFeedback->suggested_explanation,
             'choices' => $questionFeedback->suggested_choices,
             'right_ans' => $questionFeedback->suggested_right_ans,
+            'reviewed' => true,
         ]);
 
         return $question;

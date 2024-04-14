@@ -82,27 +82,37 @@ Route::apiResource('examcategorytaken', ExamCategoryTakenController::class, [
 Route::apiResource('attachment', AttachmentController::class, [
             'only' => ['index', 'show']
         ]);
-        Route::get('/me', 'Jerquin\Http\Controllers\UserController@me');
+Route::get('/me', 'Jerquin\Http\Controllers\UserController@me');
+Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
+
+// Route::group(
+//     ['middleware' => ['can:' . Permission::USER, 'auth:sanctum']],
+//      function () {
+
+//         Route::apiResource('settings', SettingsController::class, [
+//             'only' => ['store']
+//         ]);
+
+// });
+Route::get('answerexams/{questionNo}/{examCategoryTaken}', [AnswerExamsController::class, 'showRelatedQuestion']);
 
 Route::group(
-    ['middleware' => ['can:' . Permission::USER, 'auth:sanctum']],
+    ['middleware' => ['permission:' . Permission::USER . '|' . Permission::STAFF, 'auth:sanctum']],
      function () {
-        Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
 
-        Route::apiResource('settings', SettingsController::class, [
-            'only' => ['store']
+         Route::apiResource('answerexams', AnswerExamsController::class, [
+            'only' => ['update','store', 'destroy']
         ]);
 
 });
 
-Route::get('answerexams/{questionNo}/{examCategoryTaken}', [AnswerExamsController::class, 'showRelatedQuestion']);
+
 Route::group(
-     ['middleware' => ['permission:' . Permission::STAFF, 'auth:sanctum']],
+     ['middleware' => ['permission:' . Permission::STAFF . '|' . Permission::SUPER_ADMIN, 'auth:sanctum']],
      function () {
-        Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
 
         Route::apiResource('question-feedback', QuestionFeedbackController::class, [
-        'only' => ['update','store']
+        'only' => ['update','store', 'destroy']
         ]);
 
 });
@@ -111,14 +121,10 @@ Route::group(
 Route::group(
      ['middleware' => ['permission:' . Permission::SUPER_ADMIN, 'auth:sanctum']],
      function () {
-
-        Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
         Route::apiResource('categories', CategoryController::class, [
             'only' => ['store', 'update', 'destroy']
         ]);
-        Route::apiResource('question-feedback', QuestionFeedbackController::class, [
-        'only' => ['update','store', 'destroy']
-        ]);
+ 
         Route::apiResource('examlist', ExamListController::class, [
             'only' => [ 'update','store', 'destroy']
         ]);
@@ -131,22 +137,12 @@ Route::group(
         Route::apiResource('examtaken', ExamTakenController::class, [
             'only' => ['update','store', 'destroy']
         ]);
-        Route::apiResource('answerexams', AnswerExamsController::class, [
-            'only' => ['update','store', 'destroy']
-        ]);
 
-        Route::apiResource('examcategorytaken', ExamCategoryTakenController::class, [
-            'only' => ['update','store', 'destroy']
-        ]);
-        Route::apiResource('settings', SettingsController::class, [
-            'only' => ['store']
-        ]);
         Route::apiResource('attachment', AttachmentController::class, [
             'only' => [ 'update','store', 'destroy']
         ]);
         Route::post('export-questions', 'Jerquin\Http\Controllers\QuestionController@exportQuestions');
         Route::post('import-questions', 'Jerquin\Http\Controllers\QuestionController@importQuestions');
-
         Route::put('question-feedback-approve/{questionId}', [QuestionFeedbackController::class, 'approveQuestionFeedback']);
         Route::post('users/ban-user', 'Jerquin\Http\Controllers\UserController@banUser');
         Route::post('users/active-user', 'Jerquin\Http\Controllers\UserController@activeUser');
