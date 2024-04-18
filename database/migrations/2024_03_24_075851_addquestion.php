@@ -24,7 +24,6 @@ return new class extends Migration
             $table->boolean('pass')->nullable(); // Whether the exam was passed
             $table->float('exam_result')->nullable(); // The result of the exam as a float
             $table->float('exam_percentage', 5, 2)->nullable(); // Exam percentage with 2 decimal places
-
             $table->timestamps();
             $table->boolean('completed')->default(false);
             // Foreign keys
@@ -42,7 +41,10 @@ return new class extends Migration
             $table->float('exam_result')->nullable();; // Assuming a precision of 8 and a scale of 2
             $table->float('exam_percentage', 5, 2); // Assuming a precision of 5 and a scale of 2
             $table->unsignedBigInteger('exam_category_id'); // Reference to ExamCategory model
-            $table->timestamps();
+            $table->boolean('completed')->default(false);
+            $table->timestamps();        
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('exam_taken_id')->references('id')->on('exam_taken')->onDelete('cascade');
             $table->foreign('exam_category_id')->references('id')->on('examcategory')->onDelete('cascade');
         });
@@ -63,6 +65,20 @@ return new class extends Migration
             $table->foreign('exam_taken_category_id')->references('id')->on('exam_category_taken')->onDelete('cascade');
             $table->foreign('answered_id')->references('id')->on('questions')->onDelete('cascade');
         });
+        Schema::create('question_feedback', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('question_id'); // Link to the question being commented on
+            $table->text('suggested_question')->nullable(); // User's suggestion for the question text
+            $table->string('suggested_answer')->nullable(); // User's suggestion for the answer
+            $table->json('suggested_choices')->nullable(); // User's suggested choices, stored as a JSON array
+            $table->string('suggested_right_ans')->nullable(); // User's suggestion for the correct answer
+            $table->text('suggested_explanation')->nullable(); // User's suggestion for the explanation
+            $table->text('user_feedback')->nullable(); // Any additional feedback from the user
+            $table->unsignedBigInteger('submitted_id');
+            $table->foreign('submitted_id')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamps();
+            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
+        });
     }
 
     /**
@@ -75,5 +91,6 @@ return new class extends Migration
         Schema::dropIfExists('answer_exams');
         Schema::dropIfExists('exam_category_taken');
         Schema::dropIfExists('exam_taken');
+        Schema::dropIfExists('question_feedback');
     }
 };

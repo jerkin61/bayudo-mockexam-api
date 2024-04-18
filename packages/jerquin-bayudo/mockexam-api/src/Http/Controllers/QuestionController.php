@@ -100,7 +100,7 @@ class QuestionController extends CoreController
 	  public function exportQuestions(Request $request){
         try {
 			
-        $query = Question::select('question_no', 'question', 'answer', 'choices', 'exam_category_id', 'time_left', 'time', 'answered','right_ans','explanation','reviewed');
+        $query = Question::select('question_no', 'question', 'answer', 'choices', 'exam_category_id', 'time_left', 'time', 'answered','right_ans','explanation','reviewed', 'set');
         if ($request->has('id')) {
             $query = $query->where('exam_category_id', $request->id);
         }

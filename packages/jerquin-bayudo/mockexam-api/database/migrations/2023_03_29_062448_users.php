@@ -41,6 +41,8 @@ public function up()
 
     Schema::table('users', function (Blueprint $table) {
         $table->boolean('is_active')->default(1);
+        $table->unsignedBigInteger('user_id')->nullable();
+        $table->foreign('user_id')->references('id')->on('exam_taken')->onDelete('cascade');
     });
 
 

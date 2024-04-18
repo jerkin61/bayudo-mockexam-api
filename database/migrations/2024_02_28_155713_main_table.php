@@ -54,6 +54,48 @@ return new class extends Migration
             $table->string('right_ans')->nullable(); // Changed to string
             $table->text('explanation');
             $table->timestamps();
+           $table->integer('set')->nullable();
+            $table->boolean('reviewed')->default(false);           
+        });
+
+      Schema::create('groups', function (Blueprint $table) {
+            $table->id();
+            $table->string('group_code', 8)->unique(); // 8-character unique code
+            $table->string('school')->nullable();
+            $table->integer('limitCount')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable(); // Reference to group leader
+            $table->timestamps();
+
+            // Define foreign key constraint for user_id
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+        });
+
+        Schema::create('group_user', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('group_id');
+            $table->timestamps();
+
+            // Define foreign key constraints
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
+
+            // Ensure uniqueness of pairs (user_id, group_id)
+            $table->unique(['user_id', 'group_id']);
+        });
+
+        Schema::create('exam_list_group', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('exam_list_id');
+            $table->unsignedBigInteger('group_id');
+            $table->timestamps();
+
+            // Define foreign key constraints
+            $table->foreign('exam_list_id')->references('id')->on('examlist')->onDelete('cascade');
+            $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
+
+            // Ensure uniqueness of pairs (user_id, group_id)
+            $table->unique(['exam_list_id', 'group_id']);
         });
     }
 
@@ -67,5 +109,8 @@ return new class extends Migration
          Schema::dropIfExists('examlist');
          Schema::dropIfExists('examcategory');
          Schema::dropIfExists('questions');
+        Schema::dropIfExists('groups');
+        Schema::dropIfExists('group_user');
+        Schema::dropIfExists('exam_list_group');
     }
 };

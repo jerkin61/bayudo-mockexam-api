@@ -27,4 +27,9 @@ class ExamList extends Model
         return $this->hasMany(ExamCategory::class, 'exam_id', 'id');
     }
 
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class);
+    }
+
 }

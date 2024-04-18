@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Jerquin\Database\Repositories\UserRepository;
 use Illuminate\Validation\ValidationException;
 use Jerquin\Database\Models\User;
+use Jerquin\Database\Models\Group;
 use Illuminate\Support\Facades\Hash;
 use Jerquin\Http\Requests\UserCreateRequest;
 use Jerquin\Http\Requests\UserUpdateRequest;
@@ -107,10 +108,21 @@ class UserController extends CoreController
     public function me(Request $request)
     {
         $user = $request->user();
-        // return 'working';
-        if (isset($user)) {
-            return $this->repository->with(['profile'])->find($user->id);
+   if (isset($user)) {
+    $userWithGroup = $this->repository->with(['profile', 'group.exams.examCategory'])->where('is_active', true)->find($user->id);
+
+    if ($userWithGroup && $userWithGroup->group) {
+        $allExams = collect();
+        foreach ($userWithGroup->group as $group) {
+            $allExams = $allExams->merge($group->exams);
         }
+        $uniqueExams = $allExams->unique('id');
+        $userWithGroup->allExams = $uniqueExams;
+    }
+
+    return $userWithGroup;
+}
+
           return response()->json([
         'error' => 'Unauthorized'
     ], Response::HTTP_UNAUTHORIZED);// throw new JerquinException('NOT_AUTHORIZED');
@@ -158,22 +170,53 @@ class UserController extends CoreController
         return ["token" => $user->createToken('auth_token')->plainTextToken, "permissions" => $user->getPermissionNames()];
     }
 
-       public function register(UserCreateRequest $request)
-    {
-        $permissions = [Permission::USER];
-        if (isset($request->permission)) {
-            $permissions[] = isset($request->permission->value) ? $request->permission->value : $request->permission;
-        }
-        $user = $this->repository->create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $user->givePermissionTo($permissions);
-
-        return ["token" => $user->createToken('auth_token')->plainTextToken, "permissions" => $user->getPermissionNames()];
+public function register(UserCreateRequest $request)
+{
+    $permissions = [Permission::USER];
+    if (isset($request->permission)) {
+        $permissions[] = isset($request->permission->value) ? $request->permission->value : $request->permission;
     }
+
+    if (isset($request['group_code'])) {
+        $group = Group::where('group_code', $request['group_code'])->first();
+        if ($group) {
+            if ($group->members()->count() >= $group->limitCount) {
+            return response()->json(["error" => "Group limit reached"], 400);
+            }
+
+            $user = $this->repository->create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            $user->givePermissionTo($permissions);
+
+            $user->group()->attach($group);
+
+            return [
+                "token" => $user->createToken('auth_token')->plainTextToken,
+                "permissions" => $user->getPermissionNames()
+            ];
+        } else {
+            return response()->json(["error" => "Group not found"], 404);
+        }
+    }
+
+    $user = $this->repository->create([
+        'name'     => $request->name,
+        'email'    => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    // Assign permissions to the user
+    $user->givePermissionTo($permissions);
+
+    return [
+        "token" => $user->createToken('auth_token')->plainTextToken,
+        "permissions" => $user->getPermissionNames()
+    ];
+}
 
 
     public function forgetPassword(Request $request)

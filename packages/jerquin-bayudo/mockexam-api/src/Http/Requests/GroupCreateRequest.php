@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class ExamCategoryTakenCreateRequest extends FormRequest
+class GroupCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,41 +19,40 @@ class ExamCategoryTakenCreateRequest extends FormRequest
     {
         return true;
     }
-  // "id": 1,
-  // "exam_taken_id": 1,
-  // "answered": 1,
-  // "time_done": "2024-03-24 16:26:43",
-  // "number_of_items": 234,
-  // "pass": 0,
-  // "exam_result": 120,
-  // "exam_percentage": 0.2,
-  // "exam_category_id": 3,
+// exams
+// : 
+// [5]
+// group_code
+// : 
+// "123132"
+// limitCount
+// : 
+// "1231"
+// members
+// : 
+// [8]
+// school
+// : 
+// "123123"
+// user
+// : 
+// 8
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
     public function rules()
-    {  $userId = auth()->id();
-    
-             return [
-                'exam_taken_id' => 'sometimes|required|exists:exam_taken,id', 
-                'time_done' => 'sometimes|nullable|date',
-                'number_of_items' => 'sometimes|required|integer|min:0',
-                'pass' => 'sometimes|required|boolean',
-                'exam_result' => 'sometimes|required|integer|min:0',
-                'exam_percentage' => 'sometimes|required|numeric|min:0|max:1', 
-                    'exam_category_id' => [
-            'sometimes',
-            'required',
-            'exists:examcategory,id',
-            // Adding unique validation rule for the combination of user_id and exam_category_id
-            Rule::unique('exam_category_taken')->where(function ($query) use ($userId) {
-                return $query->where('user_id', $userId);
-            }),
-        ],
-            ];
-        }
+    {
+        return [
+           'exams' => 'required|array', // Exams must be an array
+            'group_code' => 'required|string', // Each exam must have a group_code which is a string
+            'limitCount' => 'required|integer', // Each exam must have a limitCount which is a string
+            'members' => 'required|array', // Each exam must have a members array
+            'school' => 'required|string', // Each member must have a school which is a string
+            'user_id' => 'required|integer', // Each exam must have a user ID which is an integer
+        ];
+    }
 
     /**
      * Get the error messages that apply to the request parameters.
@@ -63,7 +62,6 @@ class ExamCategoryTakenCreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'exam_category_id.unique' => 'You already took this exam.',
             'name.required'         => 'Name field is required',
             'name.string'           => 'Name is not a valid string',
             'name.max:255'          => 'Name can not be more than 255 character',

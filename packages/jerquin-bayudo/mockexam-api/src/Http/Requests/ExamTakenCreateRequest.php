@@ -42,7 +42,7 @@ class ExamTakenCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|exists:users,id',
+            // 'user_id' => 'required|exists:users,id',
             'take' => 'nullable|boolean',
             'time_done' => 'nullable|date',
             'time_started' => 'nullable|date',
@@ -53,9 +53,9 @@ class ExamTakenCreateRequest extends FormRequest
                 'sometimes',
                 'required',
                 'exists:examlist,id',
-                Rule::unique('exam_taken')->where(function ($query) {
-                    return $query->where('exam_id', $this->exam_id);
-                }),
+                // Rule::unique('exam_taken')->where(function ($query) {
+                //     return $query->where('exam_id', $this->exam_id);
+                // }),
         ],
            
         ];

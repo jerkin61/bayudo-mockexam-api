@@ -31,9 +31,9 @@ class ExamTakenController extends CoreController
      * @return Collection|ExamList
      */
     public function index(Request $request)
-  {
+  { $userId = auth()->id();
     $limit = $request->limit ? $request->limit : 100000;
-    $query = $this->repository->with(['exam','examCategoryTaken'])->select('*');
+    $query = $this->repository->with(['exam','examCategoryTaken'])->select('*')->where('user_id', $userId);
     $results = $query->paginate($limit)->withQueryString()->toArray();
     return $results;
 }
@@ -56,9 +56,9 @@ class ExamTakenController extends CoreController
      * @return JsonResponse
      */
     public function show($id)
-    {
+    { $userId = auth()->id();
         try {
-          return $this->repository->where('exam_id', $id)->firstOrFail();
+          return $this->repository->where('exam_id', $id)->where('user_id', $userId)->firstOrFail();
         } catch (\Exception $e) {
             // throw new ChatbotException('ERROR.NOT_FOUND');
         }
@@ -67,6 +67,7 @@ class ExamTakenController extends CoreController
     {
       
         $validatedData = $request->validated();  
+         $validatedData['user_id'] = auth()->id();
         return $this->repository->create($validatedData);
     }
     public function destroy($id)

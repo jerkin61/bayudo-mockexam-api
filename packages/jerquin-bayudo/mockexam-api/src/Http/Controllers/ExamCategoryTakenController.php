@@ -77,7 +77,7 @@ class ExamCategoryTakenController extends CoreController
     public function show($id)
     {
         try {
-            return $this->repository->where('exam_category_id', $id)->firstOrFail();
+           return $this->repository->where('exam_category_id', $id)->with(['examTaken'])->firstOrFail();
         } catch (\Exception $e) {
             // throw new ChatbotException('ERROR.NOT_FOUND');
         }
@@ -86,6 +86,8 @@ class ExamCategoryTakenController extends CoreController
     {
       
         $validatedData = $request->validated();  
+         $userId = auth()->user()->id;
+         $validatedData['user_id'] = $userId;
         return $this->repository->create($validatedData);
     }
     public function destroy($id)

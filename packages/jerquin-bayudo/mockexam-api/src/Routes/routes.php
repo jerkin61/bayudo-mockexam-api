@@ -15,7 +15,46 @@ use Jerquin\Http\Controllers\ExamTakenController;
 use Jerquin\Http\Controllers\ExamCategoryTakenController;
 use Jerquin\Http\Controllers\AnswerExamsController;
 use Jerquin\Http\Controllers\QuestionFeedbackController;
+use Jerquin\Http\Controllers\GroupController;
 use Jerquin\Enums\Permission;
+
+// Route::middleware('auth:api')->get('/check-access', function (Request $request) {
+//     $user = Auth::user();
+//     return $user->getPermissionNames();
+//     return ['can:' . Permission::USER, 'auth:sanctum'];
+//     if (Auth::check()) {
+//     $permissions = $user->getAllPermissions()->pluck('name');
+//         return response()->json(['permissions' => $permissions], 200);
+//     } else {
+//         // User is not authenticated
+//         return response()->json(['error' => 'Unauthorized'], 401);
+//     }
+// });
+Route::middleware(['auth:api'])->get('/check-accessed', function (Request $request) {
+    $user = Auth::user();
+
+    try {
+      $permissions = $user->getPermissionNames();
+    return response()->json(['permissions' => 'here' .$permissions], 200);
+    } catch (\Throwable $th) {
+        return $th;
+    }
+ 
+});
+Route::middleware(['auth:api', 'permission:' . Permission::STAFF ])->get('/check-access', function (Request $request) {
+    $user = Auth::user();
+
+    try {
+      $permissions = $user->getPermissionNames();
+    return response()->json(['permissions' => 'here' .$permissions], 200);
+    } catch (\Throwable $th) {
+        return $th;
+    }
+ 
+});
+Route::apiResource('group', GroupController::class, [
+            'only' => [ 'index', 'show','update','store', 'destroy']
+        ]);
 
 Route::post('/register', 'Jerquin\Http\Controllers\UserController@register');
 Route::post('/register-staff', 'Jerquin\Http\Controllers\UserController@registerStaff');
@@ -43,15 +82,6 @@ Route::apiResource('categories', CategoryController::class, [
     'only' => ['index', 'show']
 ]);
    
-  
-
-// Route::group(
-//     ['middleware' => [ 'auth:sanctum', 'permission:' . Permission::STAFF . '|' . Permission::ADMIN]],
-//      function () {
-//     Route::get('/me', 'Jerquin\Http\Controllers\UserController@me');
-//     Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
-    
-// });
 Route::apiResource('settings', SettingsController::class, [
     'only' => ['index']
 ]);
@@ -85,15 +115,6 @@ Route::apiResource('attachment', AttachmentController::class, [
 Route::get('/me', 'Jerquin\Http\Controllers\UserController@me');
 Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
 
-// Route::group(
-//     ['middleware' => ['can:' . Permission::USER, 'auth:sanctum']],
-//      function () {
-
-//         Route::apiResource('settings', SettingsController::class, [
-//             'only' => ['store']
-//         ]);
-
-// });
 Route::get('answerexams/{questionNo}/{examCategoryTaken}', [AnswerExamsController::class, 'showRelatedQuestion']);
 
 Route::group(
@@ -103,7 +124,12 @@ Route::group(
          Route::apiResource('answerexams', AnswerExamsController::class, [
             'only' => ['update','store', 'destroy']
         ]);
-
+    Route::apiResource('examcategorytaken', ExamCategoryTakenController::class, [
+            'only' => ['update','store', 'destroy']
+        ]);
+    Route::apiResource('examtaken', ExamTakenController::class, [
+            'only' => ['update','store', 'destroy']
+        ]);
 });
 
 
@@ -134,9 +160,7 @@ Route::group(
         Route::apiResource('examcategory', ExamCategoryController::class, [
             'only' => [ 'update','store', 'destroy']
         ]);
-        Route::apiResource('examtaken', ExamTakenController::class, [
-            'only' => ['update','store', 'destroy']
-        ]);
+
 
         Route::apiResource('attachment', AttachmentController::class, [
             'only' => [ 'update','store', 'destroy']

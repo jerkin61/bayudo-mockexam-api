@@ -30,6 +30,10 @@ class ExamTaken extends Model
     {
         return $this->hasOne(ExamList::class, 'id', 'exam_id');
     }
+       public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
     public function examCategoryTaken()
     {
         return $this->hasMany(ExamCategoryTaken::class, 'exam_taken_id', 'id')->with(['examCategory']);

@@ -3,18 +3,17 @@
 
 namespace Jerquin\Database\Repositories;
 
-use Jerquin\Database\Models\ExamList;
+use Jerquin\Database\Models\Group;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Exceptions\RepositoryException;
 
-class ExamListRepository extends BaseRepository
+class GroupRepository extends BaseRepository
 {
+
     /**
      * @var array
      */
-    protected $fieldSearchable = [
-
-    ];
+    protected $fieldSearchable = [];
 
     public function boot()
     {
@@ -29,6 +28,6 @@ class ExamListRepository extends BaseRepository
      **/
     public function model()
     {
-        return ExamList::class;
+        return Group::class;
     }
 }
