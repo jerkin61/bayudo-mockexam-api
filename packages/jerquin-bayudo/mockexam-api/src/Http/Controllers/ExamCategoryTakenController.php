@@ -54,6 +54,7 @@ class ExamCategoryTakenController extends CoreController
          
             $validatedData = $request->validated();
             $validatedData['exam_result'] = $correctCount;
+            $validatedData['answered'] = $correctCount;
             $validatedData['exam_percentage'] = $examPercentage;
             $validatedData['number_of_items'] = $questionCount;
 

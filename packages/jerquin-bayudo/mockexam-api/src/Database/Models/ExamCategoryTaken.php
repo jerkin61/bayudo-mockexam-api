@@ -37,5 +37,9 @@ class ExamCategoryTaken extends Model
     {
         return $this->hasOne(ExamTaken::class, 'id', 'exam_taken_id');
     }
+    //      public function examTaker()
+    // {
+    //     return $this->hasOne(User::class, 'id', 'user_id');
+    // }
 
 }

@@ -77,6 +77,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(ExamTaken::class, 'user_id');
     }
+    /**
+     * @return HasOne
+     */
+    public function examCategoryTaken(): HasMany
+    {
+        return $this->hasMany(ExamCategoryTaken::class, 'user_id');
+    }
     
     /**
      * @return BelongsToMany

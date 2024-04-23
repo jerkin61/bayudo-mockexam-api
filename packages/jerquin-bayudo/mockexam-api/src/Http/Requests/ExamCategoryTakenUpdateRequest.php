@@ -36,7 +36,7 @@ class ExamCategoryTakenUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'completed' => 'required|boolean',
+            'completed' => 'nullable|boolean',
             'exam_id' => 'sometimes|required|integer',
             'category_name' => 'sometimes|required|string',
             'items_count' => 'sometimes|required|integer',
