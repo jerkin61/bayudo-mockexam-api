@@ -43,15 +43,14 @@ class ExamCategoryTakenCreateRequest extends FormRequest
                 'pass' => 'sometimes|required|boolean',
                 'exam_result' => 'sometimes|required|integer|min:0',
                 'exam_percentage' => 'sometimes|required|numeric|min:0|max:1', 
-                    'exam_category_id' => [
-            'sometimes',
-            'required',
-            'exists:examcategory,id',
-            // Adding unique validation rule for the combination of user_id and exam_category_id
-            Rule::unique('exam_category_taken')->where(function ($query) use ($userId) {
-                return $query->where('user_id', $userId);
-            }),
-        ],
+                'exam_category_id' => [
+                    'sometimes',
+                    'required',
+                    'exists:examcategory,id',
+                        Rule::unique('exam_category_taken')->where(function ($query) use ($userId) {
+                        return $query->where('user_id', $userId)->where('completed', 0);
+                    }),
+                ],
             ];
         }
 
@@ -63,7 +62,7 @@ class ExamCategoryTakenCreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'exam_category_id.unique' => 'You already took this exam.',
+            'exam_category_id.unique' => 'You already took this exam and have not completed it yet.',
             'name.required'         => 'Name field is required',
             'name.string'           => 'Name is not a valid string',
             'name.max:255'          => 'Name can not be more than 255 character',

@@ -37,7 +37,7 @@ class QuestionController extends CoreController
     if ($request->has('question_id')) {
         $query->where('exam_category_id', $request->question_id);
     }
-    if ($request->has('random')) {
+    if ($request->random == 1) {
         $query->inRandomOrder(); // Add random order if random is set to true
     }
     $results = $query->paginate($limit)->withQueryString()->toArray();

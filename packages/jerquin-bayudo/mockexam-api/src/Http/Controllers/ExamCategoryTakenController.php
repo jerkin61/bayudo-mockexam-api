@@ -75,10 +75,20 @@ class ExamCategoryTakenController extends CoreController
      * @param $id
      * @return JsonResponse
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         try {
-           return $this->repository->where('exam_category_id', $id)->with(['examTaken'])->firstOrFail();
+                 return $this->repository->with(['examTaken'])->findOrFail($id);
+        //    return $this->repository->where('exam_category_id', $id)->with(['examTaken'])->firstOrFail();
+        } catch (\Exception $e) {
+            // throw new ChatbotException('ERROR.NOT_FOUND');
+        }
+    }
+    public function showByExamCategoryId($id, Request $request)
+    {
+        try {
+                //  return $this->repository->with(['examTaken'])->findOrFail($id);
+           return $this->repository->where('exam_category_id', $id)->where('completed', $request->completed)->with(['examTaken'])->firstOrFail();
         } catch (\Exception $e) {
             // throw new ChatbotException('ERROR.NOT_FOUND');
         }
@@ -103,7 +113,7 @@ class ExamCategoryTakenController extends CoreController
 //         public function arrayToCsv(array $data): string
 //     {
 //         $output = fopen('php://temp', 'w');
-//         fputcsv($output, array_keys($data[0])); 
+//         fputcsv($output, array_keys($data[0]));
 
 //         foreach ($data as $row) {
 //             fputcsv($output, $row);

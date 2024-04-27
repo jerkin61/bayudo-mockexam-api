@@ -79,7 +79,7 @@ usort($newMembers, function($a, $b) {
     if ($b['exam_category_taken'] === null) {
         return -1; // $b is considered greater
     }
-    return $a['exam_category_taken']['answered'] - $b['exam_category_taken']['answered'];
+     return $b['exam_category_taken']['answered'] - $a['exam_category_taken']['answered'];
 });
 return response()->json($newMembers);
 } else {

@@ -109,6 +109,7 @@ Route::apiResource('answerexams', AnswerExamsController::class, [
 Route::apiResource('examcategorytaken', ExamCategoryTakenController::class, [
             'only' => ['index', 'show']
         ]);
+Route::get('examcategorytakenbyexamcategoryid/{id}', [ExamCategoryTakenController::class, 'showByExamCategoryId']);
 Route::apiResource('attachment', AttachmentController::class, [
             'only' => ['index', 'show']
         ]);

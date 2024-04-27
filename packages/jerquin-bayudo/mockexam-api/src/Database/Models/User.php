@@ -92,5 +92,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Group::class);
     }
+        public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class);
+    }
 
 }
