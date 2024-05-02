@@ -53,9 +53,9 @@ Route::middleware(['auth:api', 'permission:' . Permission::STAFF ])->get('/check
  
 });
 Route::apiResource('group', GroupController::class, [
-            'only' => [ 'index', 'show','update','store', 'destroy']
+            'only' => [ 'index', 'show']
         ]);
-
+Route::post('/change-password', 'Jerquin\Http\Controllers\UserController@changePassword');
 Route::post('/register', 'Jerquin\Http\Controllers\UserController@register');
 Route::post('/register-staff', 'Jerquin\Http\Controllers\UserController@registerStaff');
 Route::post('/social-login-token', 'Jerquin\Http\Controllers\UserController@socialLogin');
@@ -75,9 +75,11 @@ Route::apiResource('profile', ProfileController::class, [
     'only' => ['index', 'show']
 ]);
 Route::apiResource('user', UserController::class, [
-    'only' => ['index', 'show']
+    'only' => [ 'show']
 ]);
-
+Route::apiResource('attachments', AttachmentController::class, [
+    'only' => ['index', 'show','update','store', 'destroy']
+]);
 Route::apiResource('categories', CategoryController::class, [
     'only' => ['index', 'show']
 ]);
@@ -146,14 +148,16 @@ Route::group(
 
 
 Route::group(
-     ['middleware' => ['permission:' . Permission::SUPER_ADMIN, 'auth:sanctum']],
+     ['middleware' => ['permission:' . Permission::SUPER_ADMIN . '|' . Permission::ADMIN, 'auth:sanctum']],
      function () {
         Route::apiResource('categories', CategoryController::class, [
             'only' => ['store', 'update', 'destroy']
         ]);
- 
+        Route::apiResource('user', UserController::class, [
+            'only' => ['index','store','update']
+        ]);
         Route::apiResource('examlist', ExamListController::class, [
-            'only' => [ 'update','store', 'destroy']
+            'only' => [ 'update']
         ]);
         Route::apiResource('question', QuestionController::class, [
             'only' => ['update','store', 'destroy']
@@ -161,14 +165,32 @@ Route::group(
         Route::apiResource('examcategory', ExamCategoryController::class, [
             'only' => [ 'update','store', 'destroy']
         ]);
-
+        Route::apiResource('group', GroupController::class, [
+                    'only' => ['update']
+                ]);
 
         Route::apiResource('attachment', AttachmentController::class, [
             'only' => [ 'update','store', 'destroy']
         ]);
+     
+        Route::put('question-feedback-approve/{questionId}', [QuestionFeedbackController::class, 'approveQuestionFeedback']);
+});
+Route::group(
+     ['middleware' => ['permission:' . Permission::SUPER_ADMIN, 'auth:sanctum']],
+     function () {
+ 
+        Route::apiResource('examlist', ExamListController::class, [
+            'only' => [ 'store', 'destroy']
+        ]);
+               Route::apiResource('user', UserController::class, [
+            'only' => ['destroy']
+        ]);
+        Route::apiResource('group', GroupController::class, [
+                    'only' => ['store', 'destroy']
+                ]);
+      
         Route::post('export-questions', 'Jerquin\Http\Controllers\QuestionController@exportQuestions');
         Route::post('import-questions', 'Jerquin\Http\Controllers\QuestionController@importQuestions');
-        Route::put('question-feedback-approve/{questionId}', [QuestionFeedbackController::class, 'approveQuestionFeedback']);
         Route::post('users/ban-user', 'Jerquin\Http\Controllers\UserController@banUser');
         Route::post('users/active-user', 'Jerquin\Http\Controllers\UserController@activeUser');
 });

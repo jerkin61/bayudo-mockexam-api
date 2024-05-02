@@ -2,6 +2,7 @@
 
 namespace Jerquin\Http\Controllers;
 
+use Jerquin\Enums\Permission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -33,58 +34,54 @@ class GroupController extends CoreController
      * @return Collection|Group
      */
     public function index(Request $request)
-    { 
+    {    $user = auth()->user();
         $limit = $request->limit ? $request->limit : 100000;
 
         $query = $this->repository->with(['exams', 'members.examCategoryTaken', 'user']);
 
+        
+        if ($user->hasPermissionTo(Permission::ADMIN ) && !$user->hasPermissionTo(Permission::SUPER_ADMIN )) {
+            $query = $query->where('user_id', $user->id);
+        }
+    
         if (isset($request['group_code']) && $request['group_code'] != 'undefined') {
             $groupId = $request->group_code;
             $group = $query->where('group_code', $groupId)->first();
 
-if ($group) {
-    // if ($request->filled('exam_category_id')) {
-    //     $examCategoryId = $request->exam_category_id;
-    //     foreach ($group->members as $member) {
-    //         $member->examCategoryTaken = $member->examCategoryTaken->filter(function ($exam) use ($examCategoryId) {
-    //             return $exam->exam_category_id == $examCategoryId;
-    //         });
-    //     }
-    // }
-   
-$newMembers = [];
-foreach ($group->members as $member) {
-    $exam = $member->examCategoryTaken->first(function ($exam) use ($request) {
-        return $exam->exam_category_id == $request->exam_category_id;
-    });
+        if ($group) {
+            $newMembers = [];
+            foreach ($group->members as $member) {
+                $exam = $member->examCategoryTaken->first(function ($exam) use ($request) {
+                    return $exam->exam_category_id == $request->exam_category_id;
+                });
 
-    $examCategoryTaken = $exam ? [
-        'answered' => $exam->answered,
-        'number_of_items' => $exam->number_of_items,
-    ] : null;
+                $examCategoryTaken = $exam ? [
+                    'answered' => $exam->answered,
+                    'number_of_items' => $exam->number_of_items,
+                ] : null;
 
-    $newMembers[] = [
-        'user' => $member->name,
-        'exam_category_taken' => $examCategoryTaken,
-    ];
-}
-usort($newMembers, function($a, $b) {
-    // Compare based on 'answered' attribute
-    if ($a['exam_category_taken'] === null && $b['exam_category_taken'] === null) {
-        return 0;
-    }
-    if ($a['exam_category_taken'] === null) {
-        return 1; // $a is considered greater
-    }
-    if ($b['exam_category_taken'] === null) {
-        return -1; // $b is considered greater
-    }
-     return $b['exam_category_taken']['answered'] - $a['exam_category_taken']['answered'];
-});
-return response()->json($newMembers);
-} else {
-            return response()->json(['message' => 'Group not found'], 404);
-        }
+                $newMembers[] = [
+                    'user' => $member->name,
+                    'exam_category_taken' => $examCategoryTaken,
+                ];
+            }
+            usort($newMembers, function($a, $b) {
+                // Compare based on 'answered' attribute
+                if ($a['exam_category_taken'] === null && $b['exam_category_taken'] === null) {
+                    return 0;
+                }
+                if ($a['exam_category_taken'] === null) {
+                    return 1; // $a is considered greater
+                }
+                if ($b['exam_category_taken'] === null) {
+                    return -1; // $b is considered greater
+                }
+                return $b['exam_category_taken']['answered'] - $a['exam_category_taken']['answered'];
+            });
+            return response()->json($newMembers);
+            } else {
+                return response()->json(['message' => 'Group not found'], 404);
+            }
         }    
             // Execute the query with pagination
             return $query->paginate($limit);

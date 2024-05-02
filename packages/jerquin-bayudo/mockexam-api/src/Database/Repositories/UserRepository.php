@@ -77,30 +77,30 @@ class UserRepository extends BaseRepository
     public function updateUser($request, $user)
     {
         try {
-            if (isset($request['address']) && count($request['address'])) {
-                foreach ($request['address'] as $address) {
-                    if (isset($address['id'])) {
-                        // Address::findOrFail($address['id'])->update($address);
-                    } else {
-                        $address['customer_id'] = $user->id;
-                        // Address::create($address);
-                    }
-                }
-            }
+            // if (isset($request['address']) && count($request['address'])) {
+            //     foreach ($request['address'] as $address) {
+            //         if (isset($address['id'])) {
+            //             // Address::findOrFail($address['id'])->update($address);
+            //         } else {
+            //             $address['customer_id'] = $user->id;
+            //             // Address::create($address);
+            //         }
+            //     }
+            // }
             if (isset($request['profile'])) {
                 if (isset($request['profile']['id'])) {
                     Profile::findOrFail($request['profile']['id'])->update($request['profile']);
                 } else {
                     $profile = $request['profile'];
-                    $profile['customer_id'] = $user->id;
+                    $profile['user_id'] = $user->id;
                     Profile::create($profile);
                 }
             }
             $user->update($request->only($this->dataArray));
             $user->profile = $user->profile;
-            $user->address = $user->address;
-            $user->shop = $user->shop;
-            $user->managed_shop = $user->managed_shop;
+            // $user->address = $user->address;
+            // $user->shop = $user->shop;
+            // $user->managed_shop = $user->managed_shop;
             return $user;
         } catch (ValidationException $e) {
             throw new JerquinException('ERROR.SOMETHING_WENT_WRONG');

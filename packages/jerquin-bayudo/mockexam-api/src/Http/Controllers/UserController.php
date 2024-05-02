@@ -41,7 +41,7 @@ class UserController extends CoreController
     public function index(Request $request)
     {
         $limit = $request->limit ?   $request->limit : 15;
-        $users = $this->repository->with(['profile', 'examTaken'])->paginate($limit);
+        $users = $this->repository->with(['profile', 'examTaken', 'permissions'])->paginate($limit);
         return $users;
     }
 
@@ -81,7 +81,7 @@ class UserController extends CoreController
      */
     public function update(UserUpdateRequest $request, $id)
     {
-        if ($request->user()->hasPermissionTo(Permission::SUPER_ADMIN)) {
+      if ($request->user()->hasPermissionTo(Permission::SUPER_ADMIN) || $request->user()->hasPermissionTo(Permission::ADMIN)) {
             $user = $this->repository->findOrFail($id);
             return $this->repository->updateUser($request, $user);
         } elseif ($request->user()->id == $id) {
@@ -284,12 +284,12 @@ public function register(UserCreateRequest $request)
             if (Hash::check($request->oldPassword, $user->password)) {
                 $user->password = Hash::make($request->newPassword);
                 $user->save();
-                return ['message' => 'MESSAGE.PASSWORD_RESET_SUCCESSFUL', 'success' => true];
+                return ['message' => 'Successfully changed password.', 'success' => true];
             } else {
-                return ['message' => 'MESSAGE.OLD_PASSWORD_INCORRECT', 'success' => false];
+                return ['message' => 'Incorrect password', 'success' => false];
             }
         } catch (\Exception $th) {
-            throw new JerquinException('ERROR.SOMETHING_WENT_WRONG');
+            throw new JerquinException('Something went wrong');
         }
     }
     public function contactAdmin(Request $request)
@@ -299,7 +299,7 @@ public function register(UserCreateRequest $request)
             Mail::to(config('shop.admin_email'))->send(new ContactAdmin($details));
             return ['message' => 'MESSAGE.EMAIL_SENT_SUCCESSFUL', 'success' => true];
         } catch (\Exception $e) {
-            throw new JerquinException('ERROR.SOMETHING_WENT_WRONG');
+            throw new JerquinException('Something went wrong');
         }
     }
 

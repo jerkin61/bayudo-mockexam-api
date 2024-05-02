@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Jerquin\Database\Models\Profile;
+use Jerquin\Database\Models\User;
 use Jerquin\Database\Models\ExamList;
 use Jerquin\Database\Repositories\ExamListRepository;
 use Jerquin\Http\Requests\ExamListCreateRequest;
@@ -13,6 +14,7 @@ use Jerquin\Http\Requests\ExamListUpdateRequest;
 use Jerquin\Http\Requests\ProductUpdateRequest;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use Jerquin\Enums\Permission;
 
 class ExamListController extends CoreController
 {
@@ -36,6 +38,16 @@ class ExamListController extends CoreController
     $columnsToSelect = ['name', 'sale_price', 'id', 'sku', 'wholesale_price', 'unit', 'quantity', 'tax', 'status'];
 
     $query = $this->repository->with('examCategory')->select('*');
+
+    $user = auth()->user();
+
+    if ($user && $user->hasPermissionTo(Permission::ADMIN) && !$user->hasPermissionTo(Permission::SUPER_ADMIN )) {
+        $query = $user->groupOwner->exams()->with(['examCategory']);
+        $results = $query->paginate($limit)->withQueryString();
+
+        return $results;
+}
+ 
     $results = $query->paginate($limit)->withQueryString()->toArray();
     return $results;
 }
