@@ -88,7 +88,14 @@ class ExamCategoryTakenController extends CoreController
     {
         try {
                 //  return $this->repository->with(['examTaken'])->findOrFail($id);
-           return $this->repository->where('exam_category_id', $id)->where('completed', $request->completed)->with(['examTaken'])->firstOrFail();
+      $query = $this->repository->where('exam_category_id', $id);
+
+    if (isset($request->completed)) {
+        $query = $query->where('completed', $request->completed);
+    }
+
+    $result = $query->with(['examTaken'])->get();
+    return $result;
         } catch (\Exception $e) {
             // throw new ChatbotException('ERROR.NOT_FOUND');
         }

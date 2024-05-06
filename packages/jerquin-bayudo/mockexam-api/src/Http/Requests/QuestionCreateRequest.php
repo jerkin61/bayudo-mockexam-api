@@ -27,9 +27,9 @@ class QuestionCreateRequest extends FormRequest
 public function rules()
 {
     return [
-        'question_no' => 'required|integer|unique:questions,question_no',
+        'question_no' => 'required|integer',
         'question' => 'required|string',
-        'answer' => 'nullable|string',
+        'explanation' => 'required|string',
         'choices' => 'required|string', // Validate that 'choices' is a string
         'exam_category_id' => 'required|integer',
         'time_left' => 'required|numeric', // Assuming it's a decimal

@@ -36,14 +36,11 @@ class GroupController extends CoreController
     public function index(Request $request)
     {    $user = auth()->user();
         $limit = $request->limit ? $request->limit : 100000;
-
         $query = $this->repository->with(['exams', 'members.examCategoryTaken', 'user']);
-
-        
+      
         if ($user->hasPermissionTo(Permission::ADMIN ) && !$user->hasPermissionTo(Permission::SUPER_ADMIN )) {
             $query = $query->where('user_id', $user->id);
         }
-    
         if (isset($request['group_code']) && $request['group_code'] != 'undefined') {
             $groupId = $request->group_code;
             $group = $query->where('group_code', $groupId)->first();
