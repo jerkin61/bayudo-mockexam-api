@@ -34,9 +34,15 @@ class QuestionController extends CoreController
   {
     $limit = $request->limit ? $request->limit : 100000;
     $query = $this->repository->with('examCategory')->select('*');  
+    // if ($request->has('question_id')) {
+    //     $query->where('exam_category_id', $request->question_id);
+    // }
     if ($request->has('question_id')) {
-        $query->where('exam_category_id', $request->question_id);
-    }
+    $slug = $request->question_id;
+    $query->whereHas('examCategory', function ($q) use ($slug) {
+        $q->where('slug', $slug);
+    });
+}
     if ($request->random == 1) {
         $query->inRandomOrder(); // Add random order if random is set to true
     }

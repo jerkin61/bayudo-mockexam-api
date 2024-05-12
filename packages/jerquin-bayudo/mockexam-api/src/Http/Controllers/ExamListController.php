@@ -77,6 +77,14 @@ class ExamListController extends CoreController
             // throw new ChatbotException('ERROR.NOT_FOUND');
         }
     }
+    public function showGroupByExamlist($examId)
+    {
+        // try { pending
+        //     return $this->repository->where()->firstOrFail();
+        // } catch (\Exception $e) {
+        //     // throw new ChatbotException('ERROR.NOT_FOUND');
+        // }
+    }
     public function store(ExamListCreateRequest $request)
     {
       

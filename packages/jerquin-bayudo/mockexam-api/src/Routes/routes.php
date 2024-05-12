@@ -119,7 +119,8 @@ Route::get('/me', 'Jerquin\Http\Controllers\UserController@me');
 Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
 
 Route::get('answerexams/{questionNo}/{examCategoryTaken}', [AnswerExamsController::class, 'showRelatedQuestion']);
-
+Route::get('showByGroup/{groupId}', [GroupController::class, 'showByGroup']);
+Route::get('show-group-by-examlist/{examId}', [ExamList::class, 'showGroupByExamlist']);
 Route::group(
     ['middleware' => ['permission:' . Permission::USER . '|' . Permission::STAFF, 'auth:sanctum']],
      function () {

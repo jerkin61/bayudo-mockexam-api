@@ -24,7 +24,7 @@ class ExamCategory extends Model
     {
         return [
             'slug' => [
-                'source' => 'name'
+                'source' => 'category_name'
             ]
         ];
     }

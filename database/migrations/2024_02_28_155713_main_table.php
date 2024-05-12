@@ -27,9 +27,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-               Schema::create('examcategory', function (Blueprint $table) {
+        Schema::create('examcategory', function (Blueprint $table) {
             $table->id();
             $table->string('category_name');
+            $table->string('slug')->nullable();
             $table->integer('items_count')->nullable();
             $table->unsignedBigInteger('exam_id');
             $table->foreign('exam_id')->references('id')->on('examlist')->onDelete('cascade');

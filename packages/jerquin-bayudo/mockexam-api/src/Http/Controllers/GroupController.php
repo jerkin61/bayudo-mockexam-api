@@ -99,6 +99,65 @@ class GroupController extends CoreController
             // throw new ChatbotException('ERROR.NOT_FOUND');
         }
     }
+      /**
+     * Display the specified resource.
+     *
+     * @param $id
+     * @return JsonResponse
+     */
+    public function showByGroup(Request $request, $groupId)
+    {
+        try {
+            $user = auth()->user();
+        
+            $query = $this->repository->with(['exams', 'members.examCategoryTaken','user'])->where('group_code', $groupId);
+            if ($user->hasPermissionTo(Permission::ADMIN ) && !$user->hasPermissionTo(Permission::SUPER_ADMIN )) {
+            $query = $query->where('user_id', $user->id)->firstOrFail();
+              }
+
+            if($query){
+            $newMembers = [];
+            foreach ($query->members as $member) {
+                // if($member->name == 'staff@gmail.com') return $member;
+                $exam = $member->examCategoryTaken->first(function ($exam) use ($request) {
+                    return $exam->exam_category_id == $request->exam_category_id;
+                });
+
+                $examCategoryTaken = $exam ? [
+                    'answered' => $exam->answered,
+                    'number_of_items' => $exam->number_of_items,
+                    'percentage' =>  ($exam->answered / $exam->number_of_items) * 100
+                ] : null;
+
+                $newMembers[] = [
+                    'user' => $member->name,
+                    'exam_category_taken' => $examCategoryTaken,
+                    // 'answered' => $examCategoryTaken->answered,
+                    // 'number_of_items' => $examCategoryTaken->number_of_items
+                ];
+            }
+            usort($newMembers, function($a, $b) {
+                // Compare based on 'answered' attribute
+                if ($a['exam_category_taken'] === null && $b['exam_category_taken'] === null) {
+                    return 0;
+                }
+                if ($a['exam_category_taken'] === null) {
+                    return 1; // $a is considered greater
+                }
+                if ($b['exam_category_taken'] === null) {
+                    return -1; // $b is considered greater
+                }
+                return $b['exam_category_taken']['answered'] - $a['exam_category_taken']['answered'];
+            });
+            
+            return response()->json($newMembers);
+            }
+        // return $query;
+        } catch (\Exception $e) {
+            // throw new ChatbotException('ERROR.NOT_FOUND');
+        }
+    }
+
     public function store(GroupCreateRequest $request)
     {
         $data = $request->only($this->dataArray);
