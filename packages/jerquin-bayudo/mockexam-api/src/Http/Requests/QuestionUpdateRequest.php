@@ -42,7 +42,8 @@ public function rules()
         'time_left' => 'sometimes|nullable|numeric', // Assuming it's a decimal
         'time' => 'sometimes|nullable|numeric', // Assuming it's a decimal
         'answered' => 'sometimes|nullable|boolean', // Validate that 'answered' is a boolean
-        'right_ans' => 'sometimes|required|string',
+        'right_ans' => 'sometimes|required|string',        
+        'image_for_question' => 'sometimes|nullable|array',
     ];
 }
     /**

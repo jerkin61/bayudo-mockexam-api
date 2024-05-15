@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Jerquin\Database\Models\Profile;
+use Jerquin\Database\Models\ExamCategory;
 use Jerquin\Database\Models\Question;
 use Jerquin\Database\Repositories\QuestionRepository;
 use Jerquin\Http\Requests\QuestionUpdateRequest;
@@ -13,6 +14,7 @@ use Jerquin\Http\Requests\QuestionCreateRequest;
 use Jerquin\Http\Requests\ProductUpdateRequest;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use Jerquin\Enums\Permission;
 
 class QuestionController extends CoreController
 {
@@ -33,16 +35,27 @@ class QuestionController extends CoreController
     public function index(Request $request)
   {
     $limit = $request->limit ? $request->limit : 100000;
-    $query = $this->repository->with('examCategory')->select('*');  
-    // if ($request->has('question_id')) {
-    //     $query->where('exam_category_id', $request->question_id);
-    // }
-    if ($request->has('question_id')) {
-    $slug = $request->question_id;
-    $query->whereHas('examCategory', function ($q) use ($slug) {
-        $q->where('slug', $slug);
-    });
-}
+    $user = $request->user();
+    $query = $this->repository->with('examCategory')->select('*');
+    $questionId = $request->question_id;
+    $examCategory = ExamCategory::findOrFail($questionId);  
+    $examList = $examCategory->examList;
+    $canAccess = $user->hasPermissionTo(Permission::SUPER_ADMIN) ? true : false;
+    if ($request->has('question_id') && !$canAccess) {
+        // return $examCategory->examList;
+        foreach ($user->group as $group) {
+            
+            if ($examList->groups->contains($group)) {
+                $canAccess = true;
+                break;
+            }
+        }
+    }
+    if ($canAccess) {
+        $query->where('exam_category_id', $questionId);
+    } else {
+    return response()->json(['error' => "You can't access this."], 401);
+    }
     if ($request->random == 1) {
         $query->inRandomOrder(); // Add random order if random is set to true
     }

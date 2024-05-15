@@ -56,7 +56,8 @@ return new class extends Migration
             $table->text('explanation');
             $table->timestamps();
            $table->integer('set')->nullable();
-            $table->boolean('reviewed')->default(false);           
+            $table->boolean('reviewed')->default(false);  
+              $table->json('image_for_question')->nullable();         
         });
 
       Schema::create('groups', function (Blueprint $table) {

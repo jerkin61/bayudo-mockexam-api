@@ -36,6 +36,7 @@ public function rules()
         'time' => 'nullable|numeric', // Assuming it's a decimal
         'answered' => 'nullable|boolean', // Validate that 'answered' is a boolean
         'right_ans' => 'required|string',
+        'image_for_question' => 'nullable|array',
     ];
 }
 

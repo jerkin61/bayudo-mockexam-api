@@ -112,8 +112,8 @@ class GroupController extends CoreController
         
             $query = $this->repository->with(['exams', 'members.examCategoryTaken','user'])->where('group_code', $groupId);
             if ($user->hasPermissionTo(Permission::ADMIN ) && !$user->hasPermissionTo(Permission::SUPER_ADMIN )) {
-            $query = $query->where('user_id', $user->id)->firstOrFail();
-              }
+            $query = $query->where('user_id', $user->id)->firstOrFail(); 
+              }else if ($user->hasPermissionTo(Permission::SUPER_ADMIN )){ $query = $query->first(); }
 
             if($query){
             $newMembers = [];

@@ -29,6 +29,9 @@ class ExamCategory extends Model
         ];
     }
 
- 
+      public function examList()
+    {
+        return $this->hasOne(ExamList::class,'id', 'exam_id');
+    }
 
 }

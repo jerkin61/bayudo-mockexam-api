@@ -27,7 +27,7 @@ class AnswerExamsCreateRequest extends FormRequest
 public function rules()
 {
     return [
-        'exam_taken_category_id' => 'required|exists:exam_category_taken,id',
+            'exam_taken_category_id' => 'required|exists:exam_category_taken,id',
             'time_done' => 'nullable',
             'time_started' => 'nullable',
             'question_no' => [
