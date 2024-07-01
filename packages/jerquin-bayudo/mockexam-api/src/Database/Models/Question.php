@@ -37,4 +37,9 @@ class Question extends Model
         return $this->hasMany('App\Models\QuestionFeedback');
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_question');
+    }
+
 }

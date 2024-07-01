@@ -60,4 +60,14 @@ class Category extends Model
     {
         return $this->hasOne('Jerquin\Database\Models\Category', 'id', 'parent');
     }
+
+        public function blogs()
+    {
+        return $this->belongsToMany(Blog::class, 'blog_category');
+    }
+
+    public function questions()
+    {
+        return $this->belongsToMany(Question::class, 'category_question');
+    }
 }

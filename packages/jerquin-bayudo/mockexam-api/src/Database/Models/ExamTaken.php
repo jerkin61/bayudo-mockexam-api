@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Jerquin\Database\Models\ExamCategory;
+use Jerquin\Database\Models\ExamList;
 
 class ExamTaken extends Model
 {

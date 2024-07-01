@@ -67,13 +67,13 @@ return new class extends Migration
         });
         Schema::create('question_feedback', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('question_id'); // Link to the question being commented on
-            $table->text('suggested_question')->nullable(); // User's suggestion for the question text
-            $table->string('suggested_answer')->nullable(); // User's suggestion for the answer
-            $table->json('suggested_choices')->nullable(); // User's suggested choices, stored as a JSON array
-            $table->string('suggested_right_ans')->nullable(); // User's suggestion for the correct answer
-            $table->text('suggested_explanation')->nullable(); // User's suggestion for the explanation
-            $table->text('user_feedback')->nullable(); // Any additional feedback from the user
+            $table->unsignedBigInteger('question_id'); 
+            $table->text('suggested_question')->nullable();
+            $table->string('suggested_answer')->nullable(); 
+            $table->json('suggested_choices')->nullable(); 
+            $table->string('suggested_right_ans')->nullable(); 
+            $table->text('suggested_explanation')->nullable();
+            $table->text('user_feedback')->nullable(); 
             $table->unsignedBigInteger('submitted_id');
             $table->foreign('submitted_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

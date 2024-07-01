@@ -16,6 +16,8 @@ use Jerquin\Http\Controllers\ExamCategoryTakenController;
 use Jerquin\Http\Controllers\AnswerExamsController;
 use Jerquin\Http\Controllers\QuestionFeedbackController;
 use Jerquin\Http\Controllers\GroupController;
+use Jerquin\Http\Controllers\BlogItemController;
+use Jerquin\Http\Controllers\BlogController;
 use Jerquin\Enums\Permission;
 
 // Route::middleware('auth:api')->get('/check-access', function (Request $request) {
@@ -80,6 +82,12 @@ Route::apiResource('user', UserController::class, [
 Route::apiResource('attachments', AttachmentController::class, [
     'only' => ['index', 'show','update','store', 'destroy']
 ]);
+Route::apiResource('blog', BlogController::class, [
+    'only' => ['index', 'show','update','store', 'destroy']
+]);
+Route::apiResource('blog-item', BlogItemController::class, [
+    'only' => ['index', 'show','update','store', 'destroy']
+]);
 Route::apiResource('categories', CategoryController::class, [
     'only' => ['index', 'show']
 ]);
@@ -120,7 +128,7 @@ Route::post('/logout', 'Jerquin\Http\Controllers\UserController@logout');
 
 Route::get('answerexams/{questionNo}/{examCategoryTaken}', [AnswerExamsController::class, 'showRelatedQuestion']);
 Route::get('showByGroup/{groupId}', [GroupController::class, 'showByGroup']);
-Route::get('show-group-by-examlist/{examId}', [ExamList::class, 'showGroupByExamlist']);
+Route::get('show-group-by-examlist/{examId}', [ExamListController::class, 'showGroupByExamlist']);
 Route::group(
     ['middleware' => ['permission:' . Permission::USER . '|' . Permission::STAFF, 'auth:sanctum']],
      function () {
